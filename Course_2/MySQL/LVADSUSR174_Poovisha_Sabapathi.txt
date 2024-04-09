@@ -1,0 +1,56 @@
+1.
+select CustomerID,DataUsedGB, avg(DataUsedGB) from customerusage
+where Month = 'March' and Year = 2024
+group by 1,2
+order by DataUsedGB desc limit 1;
+
+2.
+select CustomerID,Month,Year,VoiceMinutesUsed from customerusage 
+order by CustomerID;
+
+3.
+select SMSCount,DataUsedGB,Month, Year from customerusage
+order by SMSCount,DataUsedGB desc;
+
+LAB-2
+4.
+select SaleID, sum(UnitsSold) from monthlysales where CategoryID=1 group by 1;
+
+5.
+select CategoryID, max(UnitsSold) as highest_sales from monthlysales
+where Quarter=1 and Year=2024
+group by 1;
+
+6.
+select SaleID,avg(UnitsSold) as average_sales from monthlysales
+where Category_ID = 1 
+group by 1 having Quarter=2 and Year=2024;
+
+LAB-2
+
+7.
+select Region,avg(ConsumptionKWh) as avg_energy_consumed from energyconsumption
+where EnergySource='Solar' or EnergySource='Wind'
+group by 1 having Month='March' and Year =2024;
+
+8.
+
+9.
+select EnergySource ,sum(ConsumptionKWh) from energyconsumption
+ where Year=2024 and Month='February'
+ group by 1;
+
+LAB-3
+10.
+select CustomerName,avg(FeedbackScore) from insurancepolicies
+group by 1
+order by avg(FeedbackScore) desc limit 1;
+
+11.
+select CustomerName,ClaimsCount from insurancepolicies
+where ClaimsCount>=1
+group by 1,2;
+
+12.
+select PolicyType,avg(FeedbackScore) from insurancepolicies group by 1;
+
