@@ -1,0 +1,74 @@
+1.
+select maintenance_id from l1_maintenance_records where
+Year(maintenance_date)=2024 and Month(maintenance_date)=03 and
+avg(cost)>(select avg(cost) from l1_maintenance_records where 
+Year(maintenance_date)=2024 and Month(maintenance_date)=03 );
+
+2.
+select maintenance_type, count(*) as maintenance from l1_maintenance_records group by 1
+having maintenance=(select max(count) from (select count(*) as count from l1_maintenance_records
+group by maintenance_type) as m)
+order by 1 desc;
+
+3.
+select technician_name, cost, count(maintenance_id) as performance from l1_maintenance_records
+WHERE Month = 'March'
+AND Year = 2024
+AND  
+(SELECT technician_name
+    FROM l1_maintenance_records
+    WHERE Month = 'February'
+    AND Year = 2024 and max(performance)
+)
+AND cost(maintenance_id)= (
+    sum(cost)
+);
+
+4.
+select distinct product_id,avg(incident_count_pre_update),avg(incident_count_post_update)
+ from l2_updates group by 1;
+
+5.
+select update_id as software_update_ID,max(user_feedback_score) as max_feedback_score 
+from l2_updates group by 1 order by 2 desc limit 1;
+
+6.
+product id "P102" has the least improvement in incident count.
+
+7.
+select p.patient_name,f.facility_name,v.reason_for_visit,t.outcome from l3_patients p 
+join l3_visits v using(patient_id)
+join l3_facilities f using (facility_id)
+join l3_treatments t on v.visit_id=t.visit_id
+where count(facility_id)>1 and Year(visit_date)=2024 and Month(visit_date)=03
+group by 1,2;
+
+8.
+select f.facility_name from l3_facilities f
+join l3_visits v using(facility_id)
+where reason_for_visit='Emergency';
+
+9.
+select p.insurance_provider from l3_patients p 
+join l3_visits v using (patient_id)
+join l3_treatments t using (visit_id)
+where t.outcome='Complicated' and Year(v.visit_date)=2024 
+and Month(v.visit_date) in(01,02,03);
+
+10.
+select product_name,category,sum(quantity) as total_quantity from l4_products
+where total_quantity=(select sum(quantity) from l4_sales)
+and Month(sale_date)='03' and Year(sale_date)=2024;
+
+11.
+create or replace view Stores_Sales as
+select store_id,sale_date,quantity from l4_sales
+where Total_sales=quantity*price;
+select region,max(Total_sales) as Highest_sales from Stores_Sales where
+Year(sale_date)=2024 and Month(sale_date) in (01,02,03);
+
+12.
+select p.product_name,st.region,s.quantity*p.price as total_quantity from l4_products p
+join sales s using (product_id)
+join stores st using (store_id)
+where Total_quantity=0 then st.region;
